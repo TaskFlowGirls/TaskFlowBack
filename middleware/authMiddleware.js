@@ -3,41 +3,34 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (req, res, next) => {
     let token = null;
 
-    // Vérification du Header Authorization (format: Bearer <token>)
-    const authHeader = req.headers["authorization"];
-    if (authHeader && authHeader.starWith("Bearer")) {
-        token = authHeader.split(" ")[1];
-    }
-
-    // Vérification des Cookies (si cooki-parser est installé sur mon server Express)
-    if (!token && req.cookies) {
-        token = req.conkies.token;
-    }
-
-    if (!token && req.cookies) {
+    // 1. Priorité au Cookie (Exigence CDC : httpOnly) 
+    if (req.cookies && req.cookies.token) {
         token = req.cookies.token;
+    } 
+    // 2. Secours sur le Header Authorization (utile pour les tests Postman)
+    else if (req.headers["authorization"] && req.headers["authorization"].startsWith("Bearer ")) {
+        token = req.headers["authorization"].split(" ")[1];
     }
 
     if (!token) {
-        return res.status(401).json({ message : "Accès refusé : Badge (token) manquant"});
+        return res.status(401).json({ message: "Accès refusé : Jeton manquant" });
     }
 
     // Vérification du JWT
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ message: "Accès refusé : Badge invalide ou expiré" });
+            return res.status(401).json({ message: "Accès refusé : Jeton invalide ou expiré" });
         }
 
-        // On attache les infos à req.client et req.user pour être compatible avec tous les controllers
-        const clientId = decoded.id || decoded.id_client || decoded.numero_client;
+        // On utilise id_utilisateur pour correspondre à ta base SQL 
+        const userId = decoded.id || decoded.id_utilisateur;
 
-        if (!clientId) {
-            return res.status(401).json({ message : "Badge corrompu : ID client introuvable" });
+        if (!userId) {
+            return res.status(401).json({ message: "Jeton corrompu" });
         }
 
-        req.client = { id: clientId };
-        req.user = { id: clientId }; // Doublon de sécurité pour les autres fichiers
-
+        // On attache l'ID à req.user pour que les prochains controllers sachent qui est connecté [cite: 87]
+        req.user = { id: userId };
         next();
     });
 };

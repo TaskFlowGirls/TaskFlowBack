@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const port = 3000;
 
 app.get('/', (req, res) => {
@@ -7,10 +8,11 @@ app.get('/', (req, res) => {
 });
 
 // Fichiers statiques
-app.use('/images', express.static(Path2D.join(__dirname, 'public/images')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 // Route de l'API
-
+// Inscription
+router.post("/register", ClientController.register);
 
 // Route de diagnostique
 app.get("/health", (req, res) => {

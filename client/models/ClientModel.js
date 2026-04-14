@@ -1,9 +1,9 @@
 const db = require("../../db");
-const bcrypt = require ("bcrypjs");
+const bcrypt = require ("bcryptjs");
 
 // Récupère un client par son ID
 const findClientById = async (id) => {
-    const [rows] = await db.query("SELECT * FROM client WHERE numero_client = ?", [ID]);
+    const [rows] = await db.query("SELECT * FROM utilisateurs WHERE numero_client = ?", [ID]);
     return rows[0];
 };
 
@@ -18,8 +18,8 @@ const createClient = async (data) => {
     const { nom, prenom, email, mdp } = data;
 
     const [result] = await db.query(
-        "INSERT INTO client ( nom, prenom, email, mdp ) VALUES (?, ?, ?, ?)",
-        [nom, prenom, email, mdp]
+        "INSERT INTO client ( nom, prenom, adresse_mail, mdp ) VALUES (?, ?, ?, ?)",
+        [nom, prenom, adresse_mail, mdp]
     );
 
     return result;
