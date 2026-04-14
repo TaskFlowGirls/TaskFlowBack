@@ -2,15 +2,15 @@ const express = require('express');
 const router = express.Router();
 const ClientController = require('../controllers/ClientController');
 
-// Connexion
+// L'email unique et le MDP de 12 caractères
+router.post("/register", ClientController.register);
+
+// Cette route doit générer le cookie httpOnly
 router.post("/login", ClientController.login);
 
-// Vérifier l'existance de l'email
-// Utilsié par ForgotPassword.jsx
-router.post("/chek-email", ClientController.checkEmail);
-
-// Réinitialiser le mot de passe
-// Utilisé par ForgotPassword.jsx
+// Pour invalider le cookie côté serveur
+router.post("/logout", ClientController.logout);
+router.post("/check-email", ClientController.checkEmail);
 router.put("/reset-password", ClientController.resetPassword);
 
 module.exports = router;
