@@ -25,4 +25,11 @@ const updateTask = async (id, data) => {
     return result;
 };
 
-module.exports = { getTasksByProject, createTask, updateTask };
+// Supprimer une tâche
+const deleteTask = async (id) => {
+    const query = `DELETE FROM tâches WHERE id_taches = ?`;
+    const [result] = await db.query(query, [id]);
+    return result;
+};
+
+module.exports = { getTasksByProject, createTask, updateTask, deleteTask };

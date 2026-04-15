@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ProjetController = require('../controllers/ProjetController');
+const ProjetController = require('../controllers/ProjetsController');
 const { verifyToken } = require('../../middleware/authMiddleware'); // Ton badge de sécurité
 
 // Route protégée pour le dashboard

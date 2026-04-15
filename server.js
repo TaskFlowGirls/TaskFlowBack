@@ -4,18 +4,21 @@ const cookieParser = require('cookie-parser'); //
 require('dotenv').config();
 
 const app = express();
-// Correction : Définir la variable port (exigence technique du CDC)
 const port = process.env.PORT || 3000;
 
 // Import du routeur client
 const clientRoutes = require('./client/routes/ClientRouter'); 
+const projetRoutes = require('./projets/routes/ProjetsRouter');
+const tacheRoutes = require('./taches/routes/TachesRouter');
 
 // Middlewares
 app.use(express.json());
 app.use(cookieParser()); // Utilise la constante importée plus haut
 
-// Branchement des routes (Spécifications fonctionnelles 4.2)
+// Branchement des routes
 app.use('/api/auth', clientRoutes);
+app.use('/api/projets', projetRoutes);
+app.use('/api/taches', tacheRoutes);
 
 // Route de diagnostic
 app.get("/health", (req, res) => {

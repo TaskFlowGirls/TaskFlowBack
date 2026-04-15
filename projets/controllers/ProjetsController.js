@@ -1,4 +1,4 @@
-const ProjetModel = require("../models/ProjetModel");
+const ProjetModel = require("../models/ProjetsModel");
 
 const getDashboard = async (req, res) => {
     try {

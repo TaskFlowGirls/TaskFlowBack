@@ -1,4 +1,4 @@
-const TacheModel = require("../models/TacheModel");
+const TacheModel = require("../models/TachesModel");
 
 const getProjectTasks = async (req, res) => {
     try {
@@ -46,4 +46,14 @@ const updateTaskStatus = async (req, res) => {
     }
 };
 
-module.exports = { getProjectTasks, addTask, updateTaskStatus };
+const removeTache = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await TacheModel.deleteTask(id); // On appelle la méthode du modèle
+        res.json({ message: "La tâche a bien été supprimée." });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la suppression de la tâche" });
+    }
+};
+
+module.exports = { getProjectTasks, addTask, updateTaskStatus, removeTache };
