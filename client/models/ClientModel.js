@@ -3,21 +3,28 @@ const bcrypt = require("bcryptjs");
 
 // Récupère un utilisateur par son email
 const findClientByEmail = async (email) => {
-    // On cherche dans la table 'utilisateurs' sur la colonne 'adresse_mail' [cite: 80, 139]
-    const [rows] = await db.query("SELECT * FROM utilisateurs WHERE adresse_mail = ?", [email]);
-    return rows[0];
+    // PostgreSQL utilise $1, $2 au lieu de ?
+    // On utilise " " pour sécuriser les noms de colonnes/tables
+    const query = 'SELECT * FROM "utilisateurs" WHERE "adresse_mail" = $1';
+    
+    // Avec le driver 'pg', on récupère les données dans .rows
+    const result = await db.query(query, [email]);
+    return result.rows[0]; 
 };
 
 // Crée un nouvel utilisateur
 const createClient = async (data) => {
     const { nom, prenom, email, mdp } = data;
 
-    const [result] = await db.query(
-        "INSERT INTO utilisateurs (nom, prenom, adresse_mail, mot_de_passe) VALUES (?, ?, ?, ?)",
-        [nom, prenom, email, mdp]
-    );
+    const query = `
+        INSERT INTO "utilisateurs" ("nom", "prenom", "adresse_mail", "mot_de_passe") 
+        VALUES ($1, $2, $3, $4) 
+        RETURNING "id_utilisateur"
+    `;
 
-    return result;
+    // RETURNING est magique sur Postgres : ça renvoie l'ID créé immédiatement
+    const result = await db.query(query, [nom, prenom, email, mdp]);
+    return result.rows[0]; 
 };
 
 // Hachage du mot de passe

@@ -29,7 +29,7 @@ const verifyToken = (req, res, next) => {
             return res.status(401).json({ message: "Jeton corrompu" });
         }
 
-        // On attache l'ID à req.user pour que les prochains controllers sachent qui est connecté [cite: 87]
+        // On attache l'ID à req.user pour que les prochains controllers sachent qui est connecté
         req.user = { id: userId };
         next();
     });
