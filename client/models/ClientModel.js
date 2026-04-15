@@ -1,40 +1,34 @@
 const db = require("../../db");
-const bcrypt = require ("bcryptjs");
+const bcrypt = require("bcryptjs");
 
-// Récupère un client par son ID
-const findClientById = async (id) => {
-    const [rows] = await db.query("SELECT * FROM utilisateurs WHERE numero_client = ?", [ID]);
-    return rows[0];
-};
-
-// Récupère un client par son email
+// Récupère un utilisateur par son email
 const findClientByEmail = async (email) => {
-    const [rows] = await db.query("SELECT * FROM client WHERE email_client = ?", [email]);
+    // On cherche dans la table 'utilisateurs' sur la colonne 'adresse_mail' [cite: 80, 139]
+    const [rows] = await db.query("SELECT * FROM utilisateurs WHERE adresse_mail = ?", [email]);
     return rows[0];
 };
 
-// Crée un nouveau client
+// Crée un nouvel utilisateur
 const createClient = async (data) => {
     const { nom, prenom, email, mdp } = data;
 
     const [result] = await db.query(
-        "INSERT INTO client ( nom, prenom, adresse_mail, mdp ) VALUES (?, ?, ?, ?)",
-        [nom, prenom, adresse_mail, mdp]
+        "INSERT INTO utilisateurs (nom, prenom, adresse_mail, mot_de_passe) VALUES (?, ?, ?, ?)",
+        [nom, prenom, email, mdp]
     );
 
     return result;
 };
 
-// Sécurise le mot de passe avant l'insertion en base
+// Hachage du mot de passe
 const hashPassword = async (password) => {
-    if (!password) throw new Error("Mot de passe manquant pour le hachage");
+    if (!password) throw new Error("Mot de passe manquant");
     const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt)
+    return await bcrypt.hash(password, salt);
 };
 
-// Compare le mot de passe saisi avec celui stocké en base
+// Comparaison pour le login
 const comparePassword = async (password, hash) => {
-    // Si pas de hash en base, la comparaison est impossible
     if (!password || !hash) return false;
     return await bcrypt.compare(password, hash);
 };
@@ -43,5 +37,5 @@ module.exports = {
     findClientByEmail,
     createClient,
     hashPassword,
-    findClientById
+    comparePassword
 };

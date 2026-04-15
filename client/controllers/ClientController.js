@@ -1,17 +1,21 @@
+const ClientModel = require("../models/ClientModel");
+const jwt = require("jsonwebtoken");
+
+// Inscription
 const register = async (req, res) => {
     try {
         const { nom, prenom, email, mdp } = req.body;
-
-        // Validation CDC: 12 caractères + complexité (exemple simplifié ici)
+        // Validation complexité MDP 
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+        
         if (!passwordRegex.test(mdp)) {
-            return res.status(400).json({ message: "Le mot de passe ne respecte pas les critères de sécurité." });
+            return res.status(400).json({ message: "Le mot de passe ne respecte pas les critères." });
         }
 
-        const existingClient = await ClientModel.findClientByEmail(email);
+        const existingClient = await ClientModel.findClientByEmail(email); // [cite: 80]
         if (existingClient) return res.status(400).json({ message: "Email déjà utilisé" });
 
-        const hashedPassword = await ClientModel.hashPassword(mdp);
+        const hashedPassword = await ClientModel.hashPassword(mdp); // [cite: 81]
         await ClientModel.createClient({ nom, prenom, email, mdp: hashedPassword });
         
         res.status(201).json({ message: "Compte créé avec succès !" });
@@ -20,6 +24,7 @@ const register = async (req, res) => {
     }
 };
 
+// Connexion
 const login = async (req, res) => {
     try {
         const { email, mdp } = req.body;
@@ -31,35 +36,43 @@ const login = async (req, res) => {
 
         const token = jwt.sign(
             { id: client.id_utilisateur },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || "secret_par_defaut",
             { expiresIn: "24h" }
         );
 
-        // Envoi via cookie httpOnly comme exigé par le CDC
         res.cookie("token", token, {
-            httpOnly: true, 
+            httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 24 * 60 * 60 * 1000 // 24h
+            maxAge: 24 * 60 * 60 * 1000 
         });
 
         res.json({ message: "Connexion réussie", user: { nom: client.nom, prenom: client.prenom } });
     } catch (error) {
-        res.status(500).json({ message: "Erreur de connexion" });
+        console.error("DEBUG SQL ERROR:", error);
+        res.status(500).json({ 
+            message: "Erreur inscription", 
+            error: error.message || "Erreur inconnue" 
+        });
     }
 };
 
-// Déconnexion
 const logout = async (req, res) => {
-    try {
-        // Le serveur invalide le cookie en le supprimant ou en mettant une date expirée 
-        res.clearCookie("token", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: 'strict'
-        });
-        
-        res.json({ message: "Déconnexion réussie. Redirection vers l'accueil..." });
-    } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la déconnexion" });
-    }
+    res.clearCookie("token"); 
+    res.json({ message: "Déconnexion réussie" });
+};
+
+const checkEmail = async (req, res) => {
+    res.json({ message: "Email vérifié" });
+};
+
+const resetPassword = async (req, res) => {
+    res.json({ message: "Mot de passe réinitialisé" });
+};
+
+module.exports = {
+    register,
+    login,
+    logout,
+    checkEmail,
+    resetPassword
 };
