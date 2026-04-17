@@ -7,7 +7,6 @@ const getDashboard = async (req, res) => {
         const projets = await ProjetModel.getUserProjects(userId);
 
         const projetsAvecStats = projets.map(p => {
-            // Postgres renvoie les agrégats (COUNT/SUM) en String, on les convertit
             const total = parseInt(p.total_taches) || 0;
             const terminees = parseInt(p.taches_terminees) || 0;
             const avancement = total > 0 ? Math.round((terminees / total) * 100) : 0;
@@ -40,7 +39,6 @@ const addProjet = async (req, res) => {
         // Debug pour voir exactement ce que le modèle renvoie au contrôleur
         console.log("ID récupéré par le controller :", id_projet);
 
-        // Liaison automatique : le créateur devient Chef de projet
         const queryLiaison = `
             INSERT INTO "participer" ("id_utilisateur", "id_projet", "role_utilisateur") 
             VALUES ($1, $2, $3)

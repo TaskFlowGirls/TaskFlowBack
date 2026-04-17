@@ -45,7 +45,6 @@ const createProjet = async (data) => {
     // On vérifie ce qu'il y a dans le premier résultat
     if (result.rows && result.rows.length > 0) {
         // On récupère la valeur de la première colonne de la première ligne
-        // C'est la manière la plus sûre car PostgreSQL peut changer la casse (id_projet vs id_projet)
         return result.rows[0].id_projet || Object.values(result.rows[0])[0];
     }
     

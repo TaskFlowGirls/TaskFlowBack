@@ -5,11 +5,11 @@ const checkProjectRole = (rolesAutorises) => {
         try {
             console.log("=== VÉRIFICATION RÔLE V8 ===");
 
-            // 1. On sécurise les entrées
+            // On sécurise les entrées
             const userId = req.user ? req.user.id : null;
             const taskId = req.params ? req.params.id : null;
             
-            // On récupère le projectId de manière ultra-sécurisée
+            // On récupère le projectId de manière sécurisée
             let projectId = null;
             if (req.params && req.params.projectId) projectId = req.params.projectId;
             else if (req.params && req.params.id_projet) projectId = req.params.id_projet;
@@ -17,7 +17,7 @@ const checkProjectRole = (rolesAutorises) => {
 
             console.log(`Debug : User=${userId}, Task=${taskId}, Project=${projectId}`);
 
-            // 2. Si on n'a pas de projet mais qu'on a une tâche, on cherche en base
+            // Si on n'a pas de projet mais qu'on a une tâche, on cherche en base
             if (!projectId && taskId) {
                 console.log("Recherche en base pour la tâche:", taskId);
                 const result = await db.query('SELECT id_projet FROM "taches" WHERE id_taches = $1', [taskId]);
@@ -31,12 +31,12 @@ const checkProjectRole = (rolesAutorises) => {
                 }
             }
 
-            // 3. Si après ça on n'a toujours rien, on arrête proprement
+            // Si après ça on n'a toujours rien, on arrête proprement
             if (!projectId) {
                 return res.status(400).json({ message: "Impossible d'identifier le projet." });
             }
 
-            // 4. Vérification finale du rôle
+            // Vérification finale du rôle
             const roleCheck = await db.query(
                 'SELECT role_utilisateur FROM "participer" WHERE id_utilisateur = $1 AND id_projet = $2',
                 [userId, projectId]

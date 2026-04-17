@@ -2,10 +2,9 @@ const db = require("../../db");
 
 // Récupérer toutes les tâches d'un projet spécifique pour le Kanban
 const getTasksByProject = async (projectId) => {
-    // Utilisation de $1 et doubles guillemets pour éviter les soucis d'accent
     const query = 'SELECT * FROM "taches" WHERE "id_projet" = $1 ORDER BY "date_butoire" ASC';
     const result = await db.query(query, [projectId]);
-    return result.rows; // Postgres retourne les données dans .rows
+    return result.rows;
 };
 
 // Créer une tâche 
@@ -36,7 +35,7 @@ const updateTask = async (id, data) => {
     `;
     
     const result = await db.query(query, [statut, temps_reel, id]);
-    return result.rowCount; // .rowCount indique combien de lignes ont été modifiées
+    return result.rowCount;
 };
 
 // Supprimer une tâche
@@ -47,7 +46,6 @@ const deleteTask = async (id) => {
 };
 
 const assignUserToTask = async (taskId, userId) => {
-    // Vérifie bien que ta table de liaison s'appelle "assigner" sur Supabase
     const query = 'INSERT INTO "assigner" ("id_taches", "id_utilisateur") VALUES ($1, $2)';
     const result = await db.query(query, [taskId, userId]);
     return result.rowCount;
