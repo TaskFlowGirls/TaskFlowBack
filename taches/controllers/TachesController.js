@@ -7,7 +7,6 @@ const getProjectTasks = async (req, res) => {
         const { projectId } = req.params;
         const tasks = await TacheModel.getTasksByProject(projectId);
         
-        // Postgres retourne un tableau vide [] si rien n'est trouvé, ce qui est parfait pour le Front
         res.json(tasks);
     } catch (error) {
         console.error(error);
@@ -44,7 +43,6 @@ const updateTaskStatus = async (req, res) => {
         const { id } = req.params;
         const { statut_taches, temps_reel_taches } = req.body;
         
-        // On passe les données au modèle adapté pour Postgres ($1, $2...)
         const rowCount = await TacheModel.updateTask(id, {
             statut: statut_taches,
             temps_reel: temps_reel_taches
@@ -66,14 +64,14 @@ const removeTache = async (req, res) => {
         const { id } = req.params;
         console.log("Contrôleur : Tentative de suppression de la tâche", id);
 
-        // 1. On vérifie si la tâche existe avant de supprimer (optionnel mais propre)
+        // On vérifie si la tâche existe avant de supprimer
         const check = await db.query('SELECT * FROM "taches" WHERE id_taches = $1', [id]);
         
         if (check.rows.length === 0) {
             return res.status(404).json({ message: "La tâche n'existe pas." });
         }
 
-        // 2. Suppression
+        // Suppression
         await db.query('DELETE FROM "taches" WHERE id_taches = $1', [id]);
 
         return res.status(200).json({ message: "Tâche supprimée avec succès." });

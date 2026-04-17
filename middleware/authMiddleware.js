@@ -3,11 +3,11 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (req, res, next) => {
     let token = null;
 
-    // 1. Priorité au Cookie (Exigence CDC : httpOnly) 
+    // Priorité au Cookie
     if (req.cookies && req.cookies.token) {
         token = req.cookies.token;
     } 
-    // 2. Secours sur le Header Authorization (utile pour les tests Postman)
+    // Secours sur le Header Authorization
     else if (req.headers["authorization"] && req.headers["authorization"].startsWith("Bearer ")) {
         token = req.headers["authorization"].split(" ")[1];
     }

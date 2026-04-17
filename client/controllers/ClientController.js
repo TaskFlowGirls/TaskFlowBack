@@ -6,7 +6,7 @@ const register = async (req, res) => {
     try {
         const { nom, prenom, email, mdp } = req.body;
 
-        // Validation de la complexité du MDP (12 caractères, Maj, Min, Chiffre, Spécial)
+        // Validation de la complexité du MDP
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
         
         if (!passwordRegex.test(mdp)) {
@@ -51,7 +51,7 @@ const login = async (req, res) => {
         const client = await ClientModel.findClientByEmail(email);
         
         // Vérification existence et mot de passe
-        // On vérifie client.mot_de_passe (attention au nom de la colonne en BDD)
+        // On vérifie client.mot_de_passe
         if (!client || !(await ClientModel.comparePassword(mdp, client.mot_de_passe))) {
             return res.status(401).json({ message: "Identifiants invalides." });
         }

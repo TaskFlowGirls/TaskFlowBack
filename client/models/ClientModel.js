@@ -3,8 +3,6 @@ const bcrypt = require("bcryptjs");
 
 // Récupère un utilisateur par son email
 const findClientByEmail = async (email) => {
-    // PostgreSQL utilise $1, $2 au lieu de ?
-    // On utilise " " pour sécuriser les noms de colonnes/tables
     const query = 'SELECT * FROM "utilisateurs" WHERE "adresse_mail" = $1';
     
     // Avec le driver 'pg', on récupère les données dans .rows
@@ -22,7 +20,6 @@ const createClient = async (data) => {
         RETURNING "id_utilisateur"
     `;
 
-    // RETURNING est magique sur Postgres : ça renvoie l'ID créé immédiatement
     const result = await db.query(query, [nom, prenom, email, mdp]);
     return result.rows[0]; 
 };
