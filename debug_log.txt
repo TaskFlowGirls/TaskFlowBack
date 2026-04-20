@@ -1,0 +1,8 @@
+❌ [20/04/2026 11:47:19] ERREUR CRITIQUE SUPABASE : getaddrinfo ENOTFOUND db.vqvdzigsietsaaicspsf.supabase.co
+✅ [20/04/2026 13:52:36] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 14:58:03] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 14:58:28] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 15:06:33] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 15:09:07] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 15:09:24] Connexion PostgreSQL (Supabase) réussie !
+✅ [20/04/2026 16:22:53] Connexion PostgreSQL (Supabase) réussie !
