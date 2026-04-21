@@ -4,57 +4,52 @@ const ClientModel = require('../models/ClientModel');
 // Inscription
 const register = async (req, res) => {
   try {
-    const {
-      nom, prenom, email, mdp,
-    } = req.body;
+    const { nom, prenom, email, password } = req.body;
 
-    // Validation de la complexité du MDP
+    // Validation ...
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
-
-    if (!passwordRegex.test(mdp)) {
-      return res.status(400).json({
-        message: 'Le mot de passe ne respecte pas les critères (12 caractères mini, Maj, Min, Chiffre, Spécial).',
-      });
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Le mot de passe ne respecte pas les critères...' });
     }
 
-    // Vérification si l'email existe déjà
     const existingClient = await ClientModel.findClientByEmail(email);
     if (existingClient) {
       return res.status(400).json({ message: 'Email déjà utilisé.' });
     }
 
-    // Hachage et création
-    const hashedPassword = await ClientModel.hashPassword(mdp);
-
-    // Postgres retourne l'objet créé via RETURNING dans le modèle
+    const hashedPassword = await ClientModel.hashPassword(password);
+    
     const newClient = await ClientModel.createClient({
       nom,
       prenom,
       email,
-      mdp: hashedPassword,
+      password: hashedPassword,
     });
 
     return res.status(201).json({
       message: 'Compte créé avec succès !',
       userId: newClient.id_utilisateur,
     });
-  } catch (error) {
-    console.error('Erreur Inscription:', error);
-    return res.status(500).json({ message: "Erreur lors de l'inscription", error: error.message });
-  }
-};
+  } catch (error) { // <-- Cette accolade ferme le TRY
+    console.error('ERREUR DÉTAILLÉE :', error);
+    return res.status(500).json({ 
+        message: "Erreur lors de l'inscription", 
+        error: error.message || String(error)
+    });
+  } // <-- CETTE ACCOLADE FERME LE CATCH
+}; // <-- CETTE ACCOLADE FERME LA FONCTION register
 
 // Connexion
 const login = async (req, res) => {
   try {
-    const { email, mdp } = req.body;
+    const { email, password } = req.body;
 
     // Recherche du client
     const client = await ClientModel.findClientByEmail(email);
 
     // Vérification existence et mot de passe
     // On vérifie client.mot_de_passe
-    if (!client || !(await ClientModel.comparePassword(mdp, client.mot_de_passe))) {
+    if (!client || !(await ClientModel.comparePassword(password, client.mot_de_passe))) {
       return res.status(401).json({ message: 'Identifiants invalides.' });
     }
 

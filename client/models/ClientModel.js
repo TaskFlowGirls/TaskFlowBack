@@ -11,19 +11,28 @@ const findClientByEmail = async (email) => {
 };
 
 // Crée un nouvel utilisateur
+// Dans ton modèle, ajoute ce log pour voir ce qui arrive à la base
 const createClient = async (data) => {
   const {
-    nom, prenom, email, mdp,
+    nom,
+    prenom,
+    email,
+    password,
   } = data;
 
   const query = `
-        INSERT INTO "utilisateurs" ("nom", "prenom", "adresse_mail", "mot_de_passe") 
-        VALUES ($1, $2, $3, $4) 
-        RETURNING "id_utilisateur"
-    `;
+      INSERT INTO "utilisateurs" ("nom", "prenom", "adresse_mail", "mot_de_passe") 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING "id_utilisateur"
+  `;
 
-  const result = await db.query(query, [nom, prenom, email, mdp]);
-  return result.rows[0];
+  try {
+    const result = await db.query(query, [nom, prenom, email, password]);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Erreur SQL:', err);
+    throw err;
+  }
 };
 
 // Hachage du mot de passe
