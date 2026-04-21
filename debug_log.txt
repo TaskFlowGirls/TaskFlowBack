@@ -6,3 +6,6 @@
 ✅ [20/04/2026 15:09:07] Connexion PostgreSQL (Supabase) réussie !
 ✅ [20/04/2026 15:09:24] Connexion PostgreSQL (Supabase) réussie !
 ✅ [20/04/2026 16:22:53] Connexion PostgreSQL (Supabase) réussie !
+❌ [20/04/2026 16:50:35] ERREUR CRITIQUE SUPABASE : 
+❌ [20/04/2026 23:00:34] ERREUR CRITIQUE SUPABASE : 
+❌ [21/04/2026 09:32:07] ERREUR CRITIQUE SUPABASE : 
