@@ -6,6 +6,7 @@
 ✅ [20/04/2026 15:09:07] Connexion PostgreSQL (Supabase) réussie !
 ✅ [20/04/2026 15:09:24] Connexion PostgreSQL (Supabase) réussie !
 ✅ [20/04/2026 16:22:53] Connexion PostgreSQL (Supabase) réussie !
+<<<<<<< HEAD
 ❌ [21/04/2026 09:42:57] ERREUR CRITIQUE SUPABASE : 
 ❌ [21/04/2026 10:19:05] ERREUR CRITIQUE SUPABASE : 
 ❌ [21/04/2026 10:19:18] ERREUR CRITIQUE SUPABASE : 
@@ -35,3 +36,14 @@
 ❌ [21/04/2026 10:39:04] ERREUR CRITIQUE SUPABASE : 
 ✅ [21/04/2026 10:44:53] Connexion PostgreSQL (Supabase) réussie !
 ✅ [21/04/2026 10:45:06] Connexion PostgreSQL (Supabase) réussie !
+=======
+❌ [20/04/2026 16:50:35] ERREUR CRITIQUE SUPABASE : 
+❌ [20/04/2026 23:00:34] ERREUR CRITIQUE SUPABASE : 
+❌ [21/04/2026 09:32:07] ERREUR CRITIQUE SUPABASE : 
+>>>>>>> 7485788100e5b38d788044108c560eb441c49f88
+✅ [21/04/2026 10:51:10] Connexion PostgreSQL (Supabase) réussie !
+✅ [21/04/2026 10:53:00] Connexion PostgreSQL (Supabase) réussie !
+✅ [21/04/2026 10:53:16] Connexion PostgreSQL (Supabase) réussie !
+✅ [21/04/2026 10:54:36] Connexion PostgreSQL (Supabase) réussie !
+✅ [21/04/2026 10:55:07] Connexion PostgreSQL (Supabase) réussie !
+✅ [21/04/2026 10:55:41] Connexion PostgreSQL (Supabase) réussie !

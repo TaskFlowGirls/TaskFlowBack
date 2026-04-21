@@ -4,7 +4,12 @@ const ClientModel = require('../models/ClientModel');
 // Inscription
 const register = async (req, res) => {
   try {
-    const { nom, prenom, email, password } = req.body;
+    const {
+      nom,
+      prenom,
+      email,
+      password,
+    } = req.body;
 
     // Validation ...
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
@@ -18,7 +23,7 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await ClientModel.hashPassword(password);
-    
+
     const newClient = await ClientModel.createClient({
       nom,
       prenom,
@@ -32,9 +37,9 @@ const register = async (req, res) => {
     });
   } catch (error) { // <-- Cette accolade ferme le TRY
     console.error('ERREUR DÉTAILLÉE :', error);
-    return res.status(500).json({ 
-        message: "Erreur lors de l'inscription", 
-        error: error.message || String(error)
+    return res.status(500).json({
+      message: "Erreur lors de l'inscription",
+      error: error.message || String(error),
     });
   } // <-- CETTE ACCOLADE FERME LE CATCH
 }; // <-- CETTE ACCOLADE FERME LA FONCTION register

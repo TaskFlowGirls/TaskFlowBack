@@ -7,6 +7,8 @@ const ProjetsController = require('../controllers/ProjetsController');
 const { verifyToken } = require('../../middleware/authMiddleware');
 const { checkProjectRole } = require('../../middleware/roleMiddleware');
 
+router.get('/', verifyToken, ProjetsController.getDashboard);
+
 router.post('/inviter', verifyToken, checkProjectRole(['Chef de projet', 'Admin']), ProjetsController.inviteMember);
 
 router.get('/:projectId/membres', verifyToken, checkProjectRole(['Chef de projet', 'Collaborateur', 'Admin']), ProjetsController.getProjectMembers);

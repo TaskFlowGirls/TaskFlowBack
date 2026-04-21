@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 
 // Autorise les connexions
 const cors = require('cors');
+
 app.use(cors());
 
 // Import du routeur client
