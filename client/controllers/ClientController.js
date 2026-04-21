@@ -48,36 +48,22 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Recherche du client
     const client = await ClientModel.findClientByEmail(email);
 
-    // Vérification existence et mot de passe
-    // On vérifie client.mot_de_passe
     if (!client || !(await ClientModel.comparePassword(password, client.mot_de_passe))) {
       return res.status(401).json({ message: 'Identifiants invalides.' });
     }
 
-    // Génération du Token avec ID et RÔLE
     const token = jwt.sign(
-      {
-        id: client.id_utilisateur,
-        role: client.role_utilisateur,
-      },
+      { id: client.id_utilisateur, role: client.role_utilisateur },
       process.env.JWT_SECRET || 'secret_par_defaut',
-      { expiresIn: '24h' },
+      { expiresIn: '24h' }
     );
 
-    // Envoi du cookie HTTPOnly
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-
-    return res.json({
+    // On envoie le token ici, plus besoin de res.cookie
+    return res.status(200).json({
       message: 'Connexion réussie',
+      token: token, // <--- C'est ça que le frontend va lire
       user: {
         nom: client.nom,
         prenom: client.prenom,

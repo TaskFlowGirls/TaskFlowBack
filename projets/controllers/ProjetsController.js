@@ -25,7 +25,6 @@ const getDashboard = async (req, res) => {
   }
 };
 
-// Insère le projet dans la base de données, puis créer automatiquement une entrée dans la table participer
 const addProjet = async (req, res) => {
   try {
     const { typeProjet, nomProjet, descriptionProjet } = req.body;
@@ -35,7 +34,7 @@ const addProjet = async (req, res) => {
       type: typeProjet,
       nom: nomProjet,
       description: descriptionProjet,
-      id_createur: userId,
+      idCreateur: userId,
     });
 
     // Debug pour voir exactement ce que le modèle renvoie au contrôleur
@@ -57,7 +56,6 @@ const addProjet = async (req, res) => {
   }
 };
 
-// Inviter un utilisateur par son adresse mail, vérifie si l'utilisateur existe, s'il n'est pas déjà dans le projet, puis crée la liaison dans la table participer
 const inviteMember = async (req, res) => {
   try {
     const { email, idProjet, roleUtilisateur } = req.body;
@@ -92,7 +90,6 @@ const inviteMember = async (req, res) => {
   }
 };
 
-// Fait une jointure entre la table utilisateurs et participer, récupère les noms, prénoms, et rôles de tous les memnres pour un idProjet donné
 const getProjectMembers = async (req, res) => {
   try {
     const projectId = req.params.id_projet || req.params.projectId || req.params.id;
@@ -115,7 +112,6 @@ const getProjectMembers = async (req, res) => {
   }
 };
 
-// Permet de changer le rôle d'un membre, elle met simplement à jour la colone roleUtilisateur dans la table participer
 const updateMemberRole = async (req, res) => {
   try {
     const { idProjet, idUtilisateur, nouveauRole } = req.body;

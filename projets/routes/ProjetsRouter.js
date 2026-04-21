@@ -12,4 +12,7 @@ router.get('/', verifyToken, ProjetsController.getDashboard);
 router.post('/inviter', verifyToken, checkProjectRole(['Chef de projet', 'Admin']), ProjetsController.inviteMember);
 
 router.get('/:projectId/membres', verifyToken, checkProjectRole(['Chef de projet', 'Collaborateur', 'Admin']), ProjetsController.getProjectMembers);
+
+router.post('/', verifyToken, ProjetsController.addProjet);
+
 module.exports = router;
