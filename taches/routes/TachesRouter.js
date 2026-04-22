@@ -1,31 +1,49 @@
 const express = require('express');
-
 const router = express.Router();
+
+// Importations
 const TacheController = require('../controllers/TachesController');
-const { verifyToken } = require('../../middleware/authMiddleware');
-const { checkProjectRole } = require('../../middleware/roleMiddleware'); // Import ici
+const verifyToken = require('../../middleware/authMiddleware');
+const roleMiddleware = require('../../middleware/roleMiddleware');
 
-// Récupérer les tâches
-router.get('/projet/:projectId', verifyToken, checkProjectRole(['Chef de projet', 'Collaborateur', 'Admin']), TacheController.getProjectTasks);
+// Diagnostic : on vérifie que tout est bien défini avant d'initialiser les routes
+console.log("DEBUG TachesRouter - TacheController:", !!TacheController);
+console.log("DEBUG TachesRouter - checkProjectRole:", !!roleMiddleware.checkProjectRole);
 
-// Ajouter une tâche
-router.post('/projet/:projectId', verifyToken, checkProjectRole(['Chef de projet', 'Admin']), TacheController.addTask);
+// Routes sécurisées
+router.get('/projet/:projectId', 
+    verifyToken, 
+    roleMiddleware.checkProjectRole(['Chef de projet', 'Collaborateur', 'Admin']), 
+    TacheController.getProjectTasks
+);
 
-// Modifier une tâche
-router.put('/:id', verifyToken, TacheController.updateTaskStatus);
+router.post('/projet/:projectId', 
+    verifyToken, 
+    roleMiddleware.checkProjectRole(['Chef de projet', 'Admin']), 
+    TacheController.addTask
+);
 
-// Supprimer une tâche
-router.delete('/:id', verifyToken, checkProjectRole(['Chef de projet', 'Admin']), TacheController.removeTache);
+router.put('/:id', 
+    verifyToken, 
+    TacheController.updateTaskStatus
+);
 
-// Assigner une tâche
-router.post('/assign', verifyToken, checkProjectRole(['Chef de projet', 'Admin']), TacheController.assignUser);
+router.delete('/:id', 
+    verifyToken, 
+    roleMiddleware.checkProjectRole(['Chef de projet', 'Admin']), 
+    TacheController.removeTache
+);
 
-// On vérifie que l'utilisateur est bien dans le projet avant de le laisser modifier la tâche
-router.patch(
-  '/:id',
-  verifyToken,
-  checkProjectRole(['Chef de projet', 'Collaborateur']),
-  TacheController.updateTaskStatus,
+router.post('/assign', 
+    verifyToken, 
+    roleMiddleware.checkProjectRole(['Chef de projet', 'Admin']), 
+    TacheController.assignUser
+);
+
+router.patch('/:id', 
+    verifyToken, 
+    roleMiddleware.checkProjectRole(['Chef de projet', 'Collaborateur']), 
+    TacheController.updateTaskStatus
 );
 
 module.exports = router;

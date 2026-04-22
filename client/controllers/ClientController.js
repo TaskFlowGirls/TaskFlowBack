@@ -91,10 +91,35 @@ const resetPassword = async (req, res) => {
   res.json({ message: 'Fonctionnalité de réinitialisation à implémenter' });
 };
 
+const getProfil = async (req, res) => {
+  try {
+    // req.user.id vient de ton authMiddleware qui a décodé le token
+    const userId = req.user.id; 
+    
+    // Récupère les infos du client via le modèle
+    const client = await ClientModel.getClientById(userId);
+    
+    if (!client) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+    }
+
+    // On renvoie les infos (sauf le mot de passe pour la sécurité)
+    return res.status(200).json({
+      nom: client.nom,
+      prenom: client.prenom,
+      email: client.email
+    });
+  } catch (error) {
+    console.error('Erreur getProfil:', error);
+    return res.status(500).json({ message: 'Erreur lors de la récupération du profil.' });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
   checkEmail,
   resetPassword,
+  getProfil,
 };

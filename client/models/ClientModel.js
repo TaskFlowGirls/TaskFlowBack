@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../../db');
 
 // Récupère un utilisateur par son email
-const findClientByEmail = async (email) => {
+const getClientByEmail = async (email) => {
   const query = 'SELECT * FROM "utilisateurs" WHERE "adresse_mail" = $1';
 
   // Avec le driver 'pg', on récupère les données dans .rows
@@ -48,8 +48,16 @@ const comparePassword = async (password, hash) => {
   return bcrypt.compare(password, hash);
 };
 
+// Récupère un utilisateur par son ID
+const getClientById = async (id) => {
+  const query = 'SELECT * FROM "utilisateurs" WHERE "id_utilisateur" = $1';
+  const result = await db.query(query, [id]);
+  return result.rows[0];
+};
+
 module.exports = {
-  findClientByEmail,
+  getClientByEmail,
+  getClientById,
   createClient,
   hashPassword,
   comparePassword,
