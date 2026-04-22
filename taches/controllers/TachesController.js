@@ -15,52 +15,76 @@ const getProjectTasks = async (req, res) => {
   }
 };
 
+// Dans TachesController.js
 const addTask = async (req, res) => {
-  try {
-    const {
-      nomTaches, statutTaches, descriptionTaches, dateButoire, tempsPrevuTaches,
-    } = req.body;
-    const { projectId } = req.params;
+    try {
+        const { 
+            nom_taches, description_taches, date_butoire, 
+            date_debut_taches, date_fin_taches, 
+            temps_prevu_taches, id_projet 
+        } = req.body;
 
-    const id = await TacheModel.createTache({
-      nom: nomTaches,
-      statut: statutTaches || 'À faire',
-      description: descriptionTaches,
-      dateButoire,
-      temps_prevu: tempsPrevuTaches,
-      id_projet: projectId,
-    });
+        // DEBUG ULTIME : Regarde ce qui arrive VRAIMENT dans le serveur
+        console.log("--- DEBUG API ---");
+        console.log("Nom:", nom_taches);
+        console.log("Date Butoire reçue:", date_butoire);
+        console.log("Date Début reçue:", date_debut_taches);
+        console.log("Date Fin reçue:", date_fin_taches);
+        console.log("-----------------");
 
-    return res.status(201).json({
-      message: 'Tâche ajoutée au Kanban !',
-      id_taches: id,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Erreur lors de la création de la tâche' });
-  }
+        const id = await TacheModel.createTache({
+            nom: nom_taches,
+            description: description_taches,
+            date_butoire,
+            date_debut: date_debut_taches,
+            date_fin: date_fin_taches,
+            temps: temps_prevu_taches,
+            idProjet: id_projet,
+        });
+
+        return res.status(201).json({ id_taches: id });
+    } catch (error) {
+        console.error("Erreur dans addTask :", error);
+        return res.status(500).json({ message: 'Erreur lors de la création' });
+    }
 };
 
 // Efface une tâche définitivement de la base de données
 const updateTaskStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { statutTaches, tempsReelTaches } = req.body;
+    try {
+        const { id } = req.params;
+        // On extrait bien dateFinTaches ici pour ne plus avoir l'erreur "is not defined"
+        const { statutTaches, tempsReelTaches, dateFinTaches } = req.body;
 
-    const rowCount = await TacheModel.updateTask(id, {
-      statut_taches: statutTaches,
-      temps_reel_taches: tempsReelTaches,
-    });
+        // Force une valeur par défaut si c'est vide
+        const statutFinal = statutTaches || 'À faire';
+        const tempsFinal = tempsReelTaches || 0;
 
-    if (rowCount === 0) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
+        console.log("Valeurs envoyées au modèle :", { 
+            statutFinal, 
+            tempsFinal, 
+            dateFinTaches 
+        });
+
+        // Appel au modèle avec la nouvelle donnée
+        const rowCount = await TacheModel.updateTask(id, {
+            statut_taches: statutFinal,
+            temps_reel_taches: tempsFinal,
+            date_fin_taches: dateFinTaches
+        });
+
+        return res.json({ 
+            message: 'Statut et date mis à jour', 
+            nouveauStatut: statutFinal,
+            dateFin: dateFinTaches 
+        });
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour :", error);
+        return res.status(500).json({ 
+            message: 'Erreur lors de la mise à jour', 
+            error: error.message 
+        });
     }
-
-    return res.json({ message: 'Statut mis à jour' });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Erreur lors de la mise à jour' });
-  }
 };
 
 // C'est ce qui permet de savoir qui s'occupe de tel ou tel tâche
