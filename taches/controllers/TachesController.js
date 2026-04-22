@@ -15,7 +15,6 @@ const getProjectTasks = async (req, res) => {
   }
 };
 
-// Quand on clique sur Ajouter une tâche elle initialise automatiquement le statut si rien n'est précisé
 const addTask = async (req, res) => {
   try {
     const {
@@ -49,8 +48,8 @@ const updateTaskStatus = async (req, res) => {
     const { statutTaches, tempsReelTaches } = req.body;
 
     const rowCount = await TacheModel.updateTask(id, {
-      statut: statutTaches,
-      temps_reel: tempsReelTaches,
+      statut_taches: statutTaches,
+      temps_reel_taches: tempsReelTaches,
     });
 
     if (rowCount === 0) {

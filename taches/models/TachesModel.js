@@ -7,6 +7,19 @@ const getTasksByProject = async (projectId) => {
   return result.rows;
 };
 
+const updateTask = async (id, data) => {
+  const { statut_taches, temps_reel_taches } = data; 
+
+  const query = `
+        UPDATE "taches" 
+        SET "statut_taches" = $1, "temps_reel_taches" = $2 
+        WHERE "id_taches" = $3
+    `;
+
+  const result = await db.query(query, [statut_taches, temps_reel_taches, id]);
+  return result.rowCount;
+};
+
 // Créer une tâche
 const createTache = async (data) => {
   const {
@@ -27,18 +40,6 @@ const createTache = async (data) => {
 };
 
 // Mettre à jour une tâche pour le Drag & Drop
-const updateTask = async (id, data) => {
-  const { statut, tempsReel } = data;
-
-  const query = `
-        UPDATE "taches" 
-        SET "statut_taches" = $1, "temps_reel_taches" = $2 
-        WHERE "id_taches" = $3
-    `;
-
-  const result = await db.query(query, [statut, tempsReel, id]);
-  return result.rowCount;
-};
 
 // Supprimer une tâche
 const deleteTask = async (id) => {
@@ -47,7 +48,7 @@ const deleteTask = async (id) => {
   return result.rowCount;
 };
 
-// Créé un lien d'assignation 
+// Créé un lien d'assignation
 const assignUserToTask = async (taskId, userId) => {
   const query = 'INSERT INTO "assigner" ("id_taches", "id_utilisateur") VALUES ($1, $2)';
   const result = await db.query(query, [taskId, userId]);
